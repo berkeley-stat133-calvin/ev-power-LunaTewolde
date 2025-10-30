@@ -1,0 +1,29 @@
+---
+title: "Clean Energy & Electric Vehicles "
+format: pdf
+---
+
+## Project Overview
+This project analyzes whether U.S. states with higher renewable energy shares also have greater electric vehicle adoption in 2023.
+
+## Data used  and Methods
+datasets:
+- Renewable energy use by state (2023)
+- Total energy use by state (2023)
+- Electric vehicle registrations by state (2023)
+
+
+```{r}
+# Load, clean, and join
+library(dplyr)
+library(janitor)
+renew_2023 <- read.csv("renew_use_2023.csv") |> clean_names()
+total_2023 <- read.csv("total_energy_use_2023.csv") |> clean_names()
+ev_2023 <- read.csv("ev-registrations-by_state_2023.csv") |> clean_names()
+
+energy_2023 <- renew_2023 |>
+  left_join(total_2023, by = "state") |>
+  left_join(ev_2023, by = "state") |>
+  mutate(renew_share = renewable_energy_use / total_energy_use * 100)
+
+head(energy_2023)
